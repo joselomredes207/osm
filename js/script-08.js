@@ -4,7 +4,7 @@
  let lastHandled=0;
  function audioEl(){return document.getElementById('bgm-audio')}
  function btnEl(){return document.getElementById('bgm-audio-btn')}
- function paintMusic(on){const b=btnEl();if(!b)return;b.textContent=on?'🔊 Música ON':'🔇 Música OFF';b.classList.toggle('music-on',!!on);b.classList.toggle('on',!!on);b.style.display='inline-flex';b.style.visibility='visible';b.style.opacity='1'}
+ function paintMusic(on){const b=btnEl();if(!b)return;b.textContent=on?'🎵':'🔇';b.setAttribute('aria-label',on?'Música activada':'Música desactivada');b.title=on?'Música activada':'Música desactivada';b.classList.toggle('music-on',!!on);b.classList.toggle('on',!!on);b.style.display='inline-flex';b.style.visibility='visible';b.style.opacity='1'}
  async function forcePlay(){const a=audioEl();if(!a)return false;try{a.volume=.55;a.muted=false;a.loop=true;a.playsInline=true;await a.play();localStorage.setItem(MUSIC_KEY,'1');paintMusic(true);return true}catch(e){localStorage.setItem(MUSIC_KEY,'0');paintMusic(false);return false}}
  function forcePause(){const a=audioEl();try{if(a)a.pause()}catch(_){}localStorage.setItem(MUSIC_KEY,'0');paintMusic(false)}
  async function toggleMusic(ev){if(ev){ev.preventDefault();ev.stopPropagation();if(ev.stopImmediatePropagation)ev.stopImmediatePropagation()}const desiredOn=localStorage.getItem(MUSIC_KEY)!=='1';lastHandled=Date.now();if(desiredOn){await forcePlay()}else{forcePause()}}

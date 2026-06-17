@@ -216,59 +216,6 @@ function crearBotonMover(id,destino){
  b.addEventListener('click',()=>window.moverPublicacion(id,destino));
  return b;
 }
-
-
-/* ===== FIX DEFINITIVO: álbum + filtros de publicaciones dentro del módulo ===== */
-function galleryFixNorm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
-function galleryFixNum(card,key){return Number(card?.dataset?.[key]||0)}
-function applyGalleryFilters(cat){
- const g=document.getElementById('galeria-'+cat);
- if(!g)return;
- const cards=Array.from(g.querySelectorAll('.imgcard.card'));
- if(!cards.length)return;
- const search=galleryFixNorm(document.getElementById('buscar-'+cat)?.value||'');
- const role=galleryFixNorm(document.getElementById('filtro-'+cat)?.value||'');
- const order=(document.getElementById('orden-'+cat)?.value||'new').toLowerCase();
- let visible=0;
- cards.forEach(card=>{
-  const hay=galleryFixNorm([card.dataset.title,card.dataset.author,card.dataset.role,card.textContent].join(' '));
-  const roleText=galleryFixNorm(card.dataset.role||'');
-  const show=(!search||hay.includes(search))&&(!role||roleText.includes(role)||hay.includes(role));
-  card.hidden=!show;
-  card.style.display=show?'':'none';
-  if(show)visible++;
- });
- cards.sort((a,b)=>{
-  const pin=(b.dataset.pinned==='1')-(a.dataset.pinned==='1');
-  if(pin)return pin;
-  if(order==='old')return galleryFixNum(a,'date')-galleryFixNum(b,'date');
-  if(order==='likes')return galleryFixNum(b,'likes')-galleryFixNum(a,'likes')||galleryFixNum(b,'date')-galleryFixNum(a,'date');
-  if(order==='comments')return galleryFixNum(b,'comments')-galleryFixNum(a,'comments')||galleryFixNum(b,'date')-galleryFixNum(a,'date');
-  return galleryFixNum(b,'date')-galleryFixNum(a,'date');
- }).forEach(card=>g.appendChild(card));
- const st=document.getElementById('estado-'+cat);
- if(st){st.textContent=visible===cards.length?'✅ '+cards.length+' publicaciones cargadas.':'🔎 Mostrando '+visible+' de '+cards.length+' publicaciones.';st.className='status okmsg'}
-}
-window.applyGalleryFilters=applyGalleryFilters;
-window.filtrarGaleria=function(cat){applyGalleryFilters(cat)};
-window.ordenarGaleria=function(cat){applyGalleryFilters(cat)};
-window.scrollConsejoAlbum=function(dir){const t=document.getElementById('consejo-track');if(t)t.scrollBy({left:Math.max(240,t.clientWidth*.82)*(dir||1),behavior:'smooth'})};
-window.scrollClubAccounts=function(dir){const t=document.getElementById('club-accounts-track');if(t)t.scrollBy({left:Math.max(180,t.clientWidth*.82)*(dir||1),behavior:'smooth'})};
-window.filtrarPorCuenta=function(nombre){
- if(typeof window.switchTab==='function')window.switchTab(null,'comunicados-clubes');
- setTimeout(()=>{
-  const inp=document.getElementById('buscar-clubes');if(inp)inp.value=nombre||'';
-  const fil=document.getElementById('filtro-clubes');if(fil)fil.value='Cuenta de club';
-  applyGalleryFilters('clubes');
-  const g=document.getElementById('galeria-clubes'),nav=document.querySelector('nav');
-  if(g){const navH=nav?nav.getBoundingClientRect().height:0;window.scrollTo({top:Math.max(0,window.scrollY+g.getBoundingClientRect().top-navH-18),behavior:'smooth'})}
- },450)
-};
-document.addEventListener('DOMContentLoaded',()=>{
- ['consejo-track','club-accounts-track'].forEach(id=>{const t=document.getElementById(id);if(!t||t.dataset.albumFixed==='1')return;t.dataset.albumFixed='1';t.tabIndex=0;t.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){t.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false})});
- ['memes','clubes','premier'].forEach(cat=>['buscar-','filtro-','orden-'].forEach(p=>{const el=document.getElementById(p+cat);if(el&&!el.dataset.galleryFixed){el.dataset.galleryFixed='1';el.addEventListener(p==='buscar-'?'input':'change',()=>applyGalleryFilters(cat))}}));
-});
-
 function paint(g,f,id,prepend=false){const cat=f.categoria||'memes',likes=Array.isArray(f.likes)?f.likes:[],comments=Array.isArray(f.comments)?f.comments:[],liked=likes.includes(currentProfile().id),titleText=cleanPostTitle(f.titulo),author=f.author||{},owner=f.owner||{},ownerId=f.ownerId||owner.id||author.id,isLegacy=!ownerId&&!author.id,canManage=(ownerId===currentProfile().id)||isLegacy;const card=document.createElement('div');card.className='imgcard card '+(!titleText?'post-no-title':'');card.dataset.id=id;card.dataset.title=(titleText||'').toLowerCase();card.dataset.author=((author.name||'')+' '+(author.club||'')).toLowerCase();card.dataset.role=author.role||author.selectedAuthorRole||'Entrenador';card.dataset.likes=String(likes.length);card.dataset.comments=String(contarComentariosVisibles(comments));card.dataset.date=String(fechaMs(f)||Date.now());card.dataset.pinned=f.pinned?'1':'0';if(f.pinned){const pin=document.createElement('div');pin.className='pinned-ribbon';pin.textContent='📌 Fijado';card.appendChild(pin)}if(canManage){const trash=document.createElement('button');trash.type='button';trash.className='trash';trash.textContent='🗑️';trash.addEventListener('click',()=>window.borrarFotoPrensaReal(id));card.appendChild(trash);const admin=document.createElement('div');admin.className='post-admin-actions';const pinBtn=document.createElement('button');pinBtn.type='button';pinBtn.textContent=f.pinned?'📌 Desfijar':'📌 Fijar';pinBtn.addEventListener('click',ev=>{ev.stopPropagation();window.togglePinnedPublicacion(id,!!f.pinned)});const authorBtn=document.createElement('button');authorBtn.type='button';authorBtn.textContent='👤 Autor';authorBtn.addEventListener('click',ev=>{ev.stopPropagation();window.editarAutorPublicacion(id,author)});admin.append(pinBtn,authorBtn);card.appendChild(admin)}const img=document.createElement('img');img.loading='lazy';img.decoding='async';img.src=f.src||'';img.alt=titleText||'Publicación sin título';img.className='zoomable';img.addEventListener('click',()=>openPostLightbox(img.src,id,f));const body=document.createElement('div');body.style.cssText='padding:15px;text-align:center;font-weight:bold';if(titleText||canManage){const row=document.createElement('div');row.className='card-title-row';if(titleText){const title=document.createElement('span');title.textContent=titleText;row.appendChild(title)}if(canManage){const edit=document.createElement('button');edit.type='button';edit.className='inline-title-edit';edit.title=titleText?'Editar título':'Añadir título';edit.textContent='✏️';edit.addEventListener('click',ev=>{ev.stopPropagation();window.editarTituloPublicacion(id,titleText)});row.appendChild(edit)}body.appendChild(row)}const authorLine=document.createElement('div');authorLine.className='author-line';authorLine.innerHTML=`<img src="${author.avatar||DEFAULT_AVATAR}" alt="Autor"><span>${author.name||'Entrenador anónimo'} · ${author.club||'Sin club'}</span>`;authorLine.addEventListener('click',()=>openMiniProfile({name:author.name,club:author.club,avatar:author.photo||author.avatar}));body.appendChild(authorLine);const typeBadge=document.createElement('div');typeBadge.className='author-type-badge';typeBadge.textContent=autorLabel(author.role||author.selectedAuthorRole||'Entrenador');body.appendChild(typeBadge);if(isLegacy){const legacy=document.createElement('div');legacy.className='legacy-author-warning';legacy.textContent='Publicación sin autor · puedes reclamarla';body.appendChild(legacy)}const actions=document.createElement('div');actions.className='post-actions';const likeBtn=document.createElement('button');likeBtn.type='button';likeBtn.className='react-btn '+(liked?'active':'');likeBtn.textContent='❤️ '+likes.length;likeBtn.addEventListener('click',()=>window.toggleLike(id));const commentBtn=document.createElement('button');commentBtn.type='button';commentBtn.className='react-btn';commentBtn.textContent='💬 '+comments.length;commentBtn.addEventListener('click',()=>openPostLightbox(img.src,id,f));const viewBtn=document.createElement('button');viewBtn.type='button';viewBtn.className='download-btn view-image-btn';viewBtn.textContent='🖼️ Ver imagen';viewBtn.addEventListener('click',ev=>{ev.stopPropagation();window.abrirLightbox(img.src)});const dl=document.createElement('a');dl.className='download-btn';dl.href=f.src||'#';dl.download=safeFileName(titleText||'publicacion-premier-osm')+'.jpg';dl.textContent='⬇️ Descargar';if(isLegacy){const claim=document.createElement('button');claim.type='button';claim.className='claim-btn';claim.textContent='🏷️ Reclamar';claim.addEventListener('click',()=>window.reclamarPublicacion(id));actions.append(likeBtn,commentBtn,viewBtn,claim,dl)}else{actions.append(likeBtn,commentBtn,viewBtn,dl)};body.appendChild(actions);const move=document.createElement('div');move.className='move';Object.keys(cats).filter(k=>k!==cat).forEach(k=>move.appendChild(crearBotonMover(id,k)));body.appendChild(move);card.append(img,body);prepend?g.prepend(card):g.appendChild(card);applyGalleryFilters(cat)}
 async function cargarCategoria(cat,force=false){
  if(!cats[cat]||state[cat].loading)return;
@@ -652,3 +599,25 @@ document.addEventListener('DOMContentLoaded',()=>{
  if(!profileReady())setTimeout(()=>openProfileModal(true),650);
  setupNotifications().catch(console.error);setupUserNotifications().catch(console.error);const nf=document.getElementById('notify-fab'),np=document.getElementById('notify-panel'),nc=document.getElementById('notify-close');if(nf)nf.addEventListener('click',()=>{np?.classList.toggle('open');if(np?.classList.contains('open'))markAllNotificationsRead()});if(nc)nc.addEventListener('click',()=>np?.classList.remove('open'));
 });
+
+
+/* HOTFIX FINAL: album inicio + navegacion + publicaciones */
+(function(){
+'use strict';
+function id(x){return document.getElementById(x)}
+function qa(s,r=document){return Array.from(r.querySelectorAll(s))}
+function norm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
+function navH(){const n=document.querySelector('nav');return n?Math.ceil(n.getBoundingClientRect().height):0}
+function scrollTrack(trackId,dir){const t=id(trackId);if(!t)return;const a=Math.max(220,Math.floor(t.clientWidth*.82));t.scrollBy({left:a*(dir||1),behavior:'smooth'})}
+window.scrollConsejoAlbum=function(dir){scrollTrack('consejo-track',dir)};
+window.scrollClubAccounts=function(dir){scrollTrack('club-accounts-track',dir)};
+function enhance(trackId){const t=id(trackId);if(!t||t.dataset.hot==='1')return;t.dataset.hot='1';t.tabIndex=0;t.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();scrollTrack(trackId,1)} if(e.key==='ArrowLeft'){e.preventDefault();scrollTrack(trackId,-1)}});t.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){t.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false})}
+function n(c,k){return Number(c.dataset[k]||0)}
+window.applyGalleryFilters=function(cat){const g=id('galeria-'+cat);if(!g)return;const cards=qa('.imgcard.card',g);if(!cards.length)return;const search=norm(id('buscar-'+cat)?.value||'');const role=norm(id('filtro-'+cat)?.value||'');const order=(id('orden-'+cat)?.value||'new').toLowerCase();let visible=0;cards.forEach(c=>{const hay=norm([c.dataset.title,c.dataset.author,c.dataset.role,c.textContent].join(' '));const roleText=norm(c.dataset.role||'');const show=(!search||hay.includes(search))&&(!role||roleText.includes(role)||hay.includes(role));c.hidden=!show;c.style.display=show?'':'none';if(show)visible++});cards.sort((a,b)=>{const pin=(b.dataset.pinned==='1')-(a.dataset.pinned==='1');if(pin)return pin;if(order==='old')return n(a,'date')-n(b,'date');if(order==='likes')return n(b,'likes')-n(a,'likes')||n(b,'date')-n(a,'date');if(order==='comments')return n(b,'comments')-n(a,'comments')||n(b,'date')-n(a,'date');return n(b,'date')-n(a,'date')}).forEach(c=>g.appendChild(c));const st=id('estado-'+cat);if(st){st.textContent=visible===cards.length?`✅ ${cards.length} publicaciones cargadas.`:`🔎 Mostrando ${visible} de ${cards.length} publicaciones.`;st.className='status okmsg'}};
+window.filtrarGaleria=function(cat){window.applyGalleryFilters(cat)};
+window.ordenarGaleria=function(cat){window.applyGalleryFilters(cat)};
+window.filtrarPorCuenta=function(nombre){if(typeof window.switchTab==='function')window.switchTab(null,'comunicados-clubes');setTimeout(()=>{const inp=id('buscar-clubes');if(inp)inp.value=nombre||'';const f=id('filtro-clubes');if(f)f.value='Cuenta de club';window.applyGalleryFilters('clubes');const g=id('galeria-clubes');if(g)window.scrollTo({top:Math.max(0,window.scrollY+g.getBoundingClientRect().top-navH()-18),behavior:'smooth'})},450)};
+const old=window.switchTab;if(typeof old==='function'&&!window.__navHotfix){window.__navHotfix=1;window.switchTab=function(e,tab){old(e,tab);setTimeout(()=>{const el=id(tab);if(el)window.scrollTo({top:Math.max(0,window.scrollY+el.getBoundingClientRect().top-navH()-12),behavior:'smooth'});qa('nav .navbtn').forEach(b=>b.setAttribute('aria-pressed',b.classList.contains('active')?'true':'false'))},80)}}
+function init(){enhance('consejo-track');enhance('club-accounts-track');const nav=document.querySelector('nav');if(nav&&!nav.dataset.hot){nav.dataset.hot='1';nav.setAttribute('aria-label','Navegación principal');nav.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){nav.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false})}['memes','clubes','premier'].forEach(cat=>['buscar-','filtro-','orden-'].forEach(p=>{const el=id(p+cat);if(el&&!el.dataset.hot){el.dataset.hot='1';el.addEventListener(p==='buscar-'?'input':'change',()=>window.applyGalleryFilters(cat))}}))}
+document.addEventListener('DOMContentLoaded',init);setTimeout(init,300);setTimeout(init,1200);
+})();
