@@ -1,7 +1,7 @@
 // js/script-01.js - separado desde index.html
 window.abrirLightbox=function(src){const v=document.getElementById('visor'),img=document.getElementById('img-ampliada'),vid=document.getElementById('video-ampliado');v.classList.remove('video-mode','social-mode');if(vid)vid.removeAttribute('src');img.style.display='block';img.alt='Imagen ampliada';img.src=src;v.classList.add('open');document.body.classList.add('lock')};
 window.abrirVideoLightbox=function(src){const v=document.getElementById('visor'),img=document.getElementById('img-ampliada'),vid=document.getElementById('video-ampliado');img.style.display='none';img.removeAttribute('src');img.alt='';vid.src=src;v.classList.add('video-mode','open');document.body.classList.add('lock')};
-window.cerrarLightbox=function(){const v=document.getElementById('visor'),img=document.getElementById('img-ampliada'),vid=document.getElementById('video-ampliado');v.classList.remove('open','video-mode','social-mode');img.style.display='none';img.removeAttribute('src');img.alt='';if(vid)vid.removeAttribute('src');document.body.classList.remove('lock')};
+window.cerrarLightbox=function(){const v=document.getElementById('visor'),img=document.getElementById('img-ampliada'),vid=document.getElementById('video-ampliado');v.classList.remove('open','video-mode','social-mode');img.style.display='none';img.removeAttribute('src');img.alt='';if(vid)vid.removeAttribute('src');document.body.classList.remove('lock','social-lightbox-open')};
 window.switchTab=function(e,id){
  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));

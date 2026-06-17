@@ -1,18 +1,22 @@
-# Premier OSM League 25/26 - Navbar Pro
+# Premier OSM League 25/26 - Archivos separados actualizados
 
-Cambio principal:
+Usa estos dos archivos:
 
-- Barra superior rediseñada con estilo premium.
-- Botones más compactos tipo píldora.
-- Nombre corto: `🦁 POL 25/26`.
-- Textos abreviados: Normas, Consejo, Clubes, Premier, Info.
-- Scroll horizontal suave en móvil.
-- Estado activo más limpio en verde/cian.
+1. Descarga `index.html`.
+2. Descarga `README.md`.
+3. Sustituye los dos archivos antiguos de tu carpeta.
 
-Estructura:
+Esta versión del HTML es autocontenida: incluye CSS y JS dentro del propio `index.html`, así no dependes de las carpetas `css` ni `js` para probarlo.
 
-- `index.html`
-- `css/styles.css`
-- `js/script-01.js` a `js/script-09.js`
+Cambios incluidos:
 
-Sube todo respetando las carpetas `css/` y `js/`.
+- Navbar Pro.
+- Actividad reciente.
+- Selector de autor completo.
+- Cuentas oficiales de clubes.
+- Carrusel del Consejo Interno.
+- Buscadores y filtros.
+- Fijar publicaciones.
+- Editar autor visible.
+- Botón Ver imagen.
+- Sin notificaciones flotantes.
