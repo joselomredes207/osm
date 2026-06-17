@@ -29,7 +29,42 @@ function getDeviceId(){let id=localStorage.getItem('premier_profile_id');if(!id)
 function getProfile(){try{return JSON.parse(localStorage.getItem('premier_profile')||'null')}catch(_){return null}}
 function profileReady(){const p=getProfile();return !!(p&&p.name&&p.club)}
 function currentProfile(){const p=getProfile()||{};return {id:getDeviceId(),name:p.name||'Entrenador anónimo',club:p.club||'Sin club',avatar:p.avatar||DEFAULT_AVATAR,photo:p.photo||p.avatar||DEFAULT_AVATAR}}
-function setProfile(p){localStorage.setItem('premier_profile',JSON.stringify({...p,id:getDeviceId()}));paintProfileUI();try{setupUserNotifications&&setupUserNotifications()}catch(_){}}
+const UPLOAD_AUTHORS={
+ 'trainer-jose-antonio':{name:'José Antonio López Morales',club:'Liverpool FC',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'trainer-diego':{name:'Diego Mañas Haro',club:'Tottenham Hotspur',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'trainer-pedro':{name:'Pedro Ruz Mañas',club:'Manchester City',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'trainer-dennis':{name:'Dennis Patrik Bucur',club:'Arsenal FC',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'trainer-jose-felix':{name:'Jose Félix Codina Ramos',club:'Manchester United',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'trainer-javier':{name:'Javier Carrión Guillén',club:'Chelsea FC',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'trainer-alvaro':{name:'Álvaro Codina Ramos',club:'Newcastle United',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'org-miguel':{name:'Miguel Ángel',club:'Organismo interno · Presidente oficial',role:'Presidente oficial',avatar:'https://i.ibb.co/1Gyxxf4d/image.png',photo:'https://i.ibb.co/1Gyxxf4d/image.png'},
+ 'org-diddy':{name:'P. Diddy',club:'Organismo interno · Vicepresidencia',role:'Vicepresidente',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'org-jeffrey':{name:'Jeffrey Epstein',club:'Organismo interno · Control interno',role:'Control interno',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'org-gaspar':{name:'Gaspar Torrente',club:'Organismo interno · Disciplina',role:'Disciplina',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'org-rafael':{name:'Rafael Cazorla',club:'Organismo interno · Jefe de los Árbitros',role:'Jefe de los Árbitros',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ 'premier-league':{name:'Premier League',club:'Comunicado oficial de la liga',role:'Institución',avatar:'https://i.ibb.co/RTLRRmMg/image-removebg-preview.png',photo:'https://i.ibb.co/RTLRRmMg/image-removebg-preview.png'}
+};
+window.toggleCustomAuthor=function(cat){const sel=document.getElementById('autor-'+cat),box=document.getElementById('custom-author-'+cat);if(box)box.style.display=(sel&&sel.value==='custom')?'block':'none'};
+function getSelectedUploadAuthor(cat){
+ const sel=document.getElementById('autor-'+cat);
+ const owner=currentProfile();
+ if(sel&&sel.value==='custom'){
+  const name=(document.getElementById('custom-author-name-'+cat)?.value||'').trim();
+  const club=(document.getElementById('custom-author-club-'+cat)?.value||'').trim();
+  return {id:owner.id,name:name||owner.name||'Autor personalizado',club:club||'Autor personalizado',role:'Autor personalizado',avatar:owner.avatar||DEFAULT_AVATAR,photo:owner.photo||owner.avatar||DEFAULT_AVATAR,selectedAuthorId:'custom',selectedAuthorRole:'Autor personalizado',uploaderId:owner.id,uploaderName:owner.name};
+ }
+ const selected=sel&&sel.value?UPLOAD_AUTHORS[sel.value]:null;
+ if(!selected)return {...owner,selectedAuthorId:'profile-current',selectedAuthorRole:'Perfil actual',uploaderId:owner.id,uploaderName:owner.name};
+ return {...selected,id:owner.id,selectedAuthorId:sel.value,selectedAuthorRole:selected.role||'',uploaderId:owner.id,uploaderName:owner.name};
+}
+function resetUploadAuthor(cat){
+ const sel=document.getElementById('autor-'+cat);if(sel)sel.value='';
+ const box=document.getElementById('custom-author-'+cat);if(box)box.style.display='none';
+ const n=document.getElementById('custom-author-name-'+cat);if(n)n.value='';
+ const c=document.getElementById('custom-author-club-'+cat);if(c)c.value='';
+}
+
+function setProfile(p){localStorage.setItem('premier_profile',JSON.stringify({...p,id:getDeviceId()}));paintProfileUI();try{window.checkReplyDigest&&window.checkReplyDigest()}catch(_){}}
 function paintProfileUI(){const p=currentProfile();const img=document.getElementById('profile-pill-img'),name=document.getElementById('profile-pill-name');if(img)img.src=p.avatar;if(name){if(profileReady()){name.innerHTML=`<b>${p.name}</b><small>${p.club}</small>`}else{name.innerHTML='<b>Crear perfil</b><small>Configura tu entrenador</small>'}}}
 function paintProfilePreview(p=currentProfile()){const img=document.getElementById('profile-preview-img'),name=document.getElementById('profile-preview-name'),club=document.getElementById('profile-preview-club');if(img)img.src=p.photo||p.avatar||DEFAULT_AVATAR;if(name)name.textContent=p.name||'Nuevo entrenador';if(club)club.textContent=p.club||'Sin club'}
 function openProfileModal(force=false){const modal=document.getElementById('profile-modal');if(!modal)return;modal.dataset.force=force?'1':'0';const p=currentProfile();document.getElementById('profile-name').value=p.name==='Entrenador anónimo'?'':p.name;document.getElementById('profile-club').value=p.club==='Sin club'?'':p.club;paintProfilePreview(p);modal.classList.add('open');document.body.classList.add('lock')}
@@ -149,7 +184,7 @@ function renderSocialPanel(id,f){
  panel.innerHTML='';
  const head=document.createElement('div');head.className='social-panel-head';head.innerHTML=`<img src="${author.avatar||DEFAULT_AVATAR}" alt="Autor"><div><b>${author.name||'Entrenador anónimo'}</b><br><span style="color:var(--pl-cyan);font-weight:900">${author.club||'Sin club'}</span></div>`;head.addEventListener('click',()=>openMiniProfile({name:author.name,club:author.club,avatar:author.photo||author.avatar}));panel.appendChild(head);
  if(titleText){const title=document.createElement('div');title.className='social-panel-title title-edit-row';const span=document.createElement('span');span.textContent=titleText;title.appendChild(span);if(canManage){const edit=document.createElement('button');edit.type='button';edit.className='inline-title-edit';edit.title='Editar título';edit.textContent='✏️';edit.addEventListener('click',ev=>{ev.stopPropagation();window.editarTituloPublicacion(id,titleText)});title.appendChild(edit)}panel.appendChild(title)}else if(canManage){const holder=document.createElement('div');holder.className='title-placeholder-edit';const edit=document.createElement('button');edit.type='button';edit.className='inline-title-edit';edit.textContent='✏️ Añadir título';edit.addEventListener('click',()=>window.editarTituloPublicacion(id,''));holder.appendChild(edit);panel.appendChild(holder)}
- const actions=document.createElement('div');actions.className='social-panel-actions';actions.innerHTML=`<div class="post-actions"><button type="button" class="react-btn ${liked?'active':''}" id="lb-like">❤️ ${likes.length}</button><a class="download-btn" download="${safeFileName(titleText||'publicacion-premier-osm')}.jpg" href="${f.src||'#'}">⬇️ Descargar</a>${!author.id?'<button type="button" class="claim-btn" id="lb-claim">🏷️ Reclamar</button>':''}</div>`;panel.appendChild(actions);
+ const actions=document.createElement('div');actions.className='social-panel-actions';actions.innerHTML=`<div class="post-actions"><button type="button" class="react-btn ${liked?'active':''}" id="lb-like">❤️ ${likes.length}</button><button type="button" class="download-btn view-image-btn" id="lb-view-img">🖼️ Ver imagen</button><a class="download-btn" download="${safeFileName(titleText||'publicacion-premier-osm')}.jpg" href="${f.src||'#'}">⬇️ Descargar</a>${!author.id?'<button type="button" class="claim-btn" id="lb-claim">🏷️ Reclamar</button>':''}</div>`;panel.appendChild(actions);
  const visibleCount=contarComentariosVisibles(comments);const commentsTitle=document.createElement('div');commentsTitle.className='social-comments-title';commentsTitle.textContent=visibleCount===1?'1 comentario':`${visibleCount} comentarios`;panel.appendChild(commentsTitle);
  const list=document.createElement('div');list.className='social-panel-comments';panel.appendChild(list);
  const formWrap=document.createElement('div');formWrap.className='social-panel-actions comment-form-wrap';
@@ -158,7 +193,7 @@ function renderSocialPanel(id,f){
  const setReplyTarget=(c)=>{replyTarget=c;replyHint.querySelector('span').textContent='Respondiendo a '+(c.name||'Entrenador');replyHint.classList.add('show');inp.focus()};
  replyHint.querySelector('button').addEventListener('click',()=>{replyTarget=null;replyHint.classList.remove('show')});
  if(!visibleCount){list.innerHTML='<div class="social-empty">Todavía no hay comentarios. Sé el primero en comentar.</div>'}else{comments.filter(c=>!c.parentId).sort((a,b)=>(a.fecha||0)-(b.fecha||0)).forEach(c=>list.appendChild(renderComment(c,id,comments,setReplyTarget)))}
- const form=document.createElement('div');form.className='comment-form';const inp=document.createElement('input');inp.className='input';inp.placeholder='Escribe un mensaje...';inp.maxLength=220;const send=document.createElement('button');send.className='btn send-message-btn';send.type='button';send.innerHTML='📨 Enviar';send.className='btn send-message-btn';send.setAttribute('aria-label','Enviar mensaje');send.title='Enviar mensaje';const submit=()=>{window.addComment(id,inp.value,replyTarget?replyTarget.id:null);inp.value='';replyTarget=null;replyHint.classList.remove('show')};send.addEventListener('click',submit);inp.addEventListener('keydown',ev=>{if(ev.key==='Enter')submit()});form.append(inp,send);formWrap.appendChild(form);panel.appendChild(formWrap);panel.querySelector('#lb-like')?.addEventListener('click',()=>window.toggleLike(id));panel.querySelector('#lb-claim')?.addEventListener('click',()=>window.reclamarPublicacion(id))
+ const form=document.createElement('div');form.className='comment-form';const inp=document.createElement('input');inp.className='input';inp.placeholder='Escribe un mensaje...';inp.maxLength=220;const send=document.createElement('button');send.className='btn send-message-btn';send.type='button';send.innerHTML='📨 Enviar';send.className='btn send-message-btn';send.setAttribute('aria-label','Enviar mensaje');send.title='Enviar mensaje';const submit=()=>{window.addComment(id,inp.value,replyTarget?replyTarget.id:null);inp.value='';replyTarget=null;replyHint.classList.remove('show')};send.addEventListener('click',submit);inp.addEventListener('keydown',ev=>{if(ev.key==='Enter')submit()});form.append(inp,send);formWrap.appendChild(form);panel.appendChild(formWrap);panel.querySelector('#lb-like')?.addEventListener('click',()=>window.toggleLike(id));panel.querySelector('#lb-view-img')?.addEventListener('click',()=>window.abrirLightbox(src));panel.querySelector('#lb-claim')?.addEventListener('click',()=>window.reclamarPublicacion(id))
 }
 function openPostLightbox(src,id,f){currentLightboxPost=id;window.currentLightboxPost=id;document.body.classList.add('social-lightbox-open');const v=document.getElementById('visor'),img=document.getElementById('img-ampliada'),vid=document.getElementById('video-ampliado');v.classList.remove('video-mode');if(vid)vid.removeAttribute('src');img.style.display='block';img.alt=cleanPostTitle(f?.titulo)||'Imagen ampliada';img.src=src;renderSocialPanel(id,f||{});v.classList.add('social-mode','open');document.body.classList.add('lock')}
 
@@ -207,7 +242,7 @@ function crearBotonMover(id,destino){
  b.addEventListener('click',()=>window.moverPublicacion(id,destino));
  return b;
 }
-function paint(g,f,id,prepend=false){const cat=f.categoria||'memes',likes=Array.isArray(f.likes)?f.likes:[],comments=Array.isArray(f.comments)?f.comments:[],liked=likes.includes(currentProfile().id),titleText=cleanPostTitle(f.titulo),author=f.author||{},isLegacy=!author.id,canManage=(author.id===currentProfile().id)||isLegacy;const card=document.createElement('div');card.className='imgcard card '+(!titleText?'post-no-title':'');card.dataset.id=id;if(canManage){const trash=document.createElement('button');trash.type='button';trash.className='trash';trash.textContent='🗑️';trash.addEventListener('click',()=>window.borrarFotoPrensaReal(id));card.appendChild(trash)}const img=document.createElement('img');img.loading='lazy';img.decoding='async';img.src=f.src||'';img.alt=titleText||'Publicación sin título';img.className='zoomable';img.addEventListener('click',()=>openPostLightbox(img.src,id,f));const body=document.createElement('div');body.style.cssText='padding:15px;text-align:center;font-weight:bold';if(titleText||canManage){const row=document.createElement('div');row.className='card-title-row';if(titleText){const title=document.createElement('span');title.textContent=titleText;row.appendChild(title)}if(canManage){const edit=document.createElement('button');edit.type='button';edit.className='inline-title-edit';edit.title=titleText?'Editar título':'Añadir título';edit.textContent='✏️';edit.addEventListener('click',ev=>{ev.stopPropagation();window.editarTituloPublicacion(id,titleText)});row.appendChild(edit)}body.appendChild(row)}const authorLine=document.createElement('div');authorLine.className='author-line';authorLine.innerHTML=`<img src="${author.avatar||DEFAULT_AVATAR}" alt="Autor"><span>${author.name||'Entrenador anónimo'} · ${author.club||'Sin club'}</span>`;authorLine.addEventListener('click',()=>openMiniProfile({name:author.name,club:author.club,avatar:author.photo||author.avatar}));body.appendChild(authorLine);if(isLegacy){const legacy=document.createElement('div');legacy.className='legacy-author-warning';legacy.textContent='Publicación sin autor · puedes reclamarla';body.appendChild(legacy)}const actions=document.createElement('div');actions.className='post-actions';const likeBtn=document.createElement('button');likeBtn.type='button';likeBtn.className='react-btn '+(liked?'active':'');likeBtn.textContent='❤️ '+likes.length;likeBtn.addEventListener('click',()=>window.toggleLike(id));const commentBtn=document.createElement('button');commentBtn.type='button';commentBtn.className='react-btn';commentBtn.textContent='💬 '+comments.length;commentBtn.addEventListener('click',()=>openPostLightbox(img.src,id,f));const dl=document.createElement('a');dl.className='download-btn';dl.href=f.src||'#';dl.download=safeFileName(titleText||'publicacion-premier-osm')+'.jpg';dl.textContent='⬇️ Descargar';if(isLegacy){const claim=document.createElement('button');claim.type='button';claim.className='claim-btn';claim.textContent='🏷️ Reclamar';claim.addEventListener('click',()=>window.reclamarPublicacion(id));actions.append(likeBtn,commentBtn,claim,dl)}else{actions.append(likeBtn,commentBtn,dl)};body.appendChild(actions);const move=document.createElement('div');move.className='move';Object.keys(cats).filter(k=>k!==cat).forEach(k=>move.appendChild(crearBotonMover(id,k)));body.appendChild(move);card.append(img,body);prepend?g.prepend(card):g.appendChild(card)}
+function paint(g,f,id,prepend=false){const cat=f.categoria||'memes',likes=Array.isArray(f.likes)?f.likes:[],comments=Array.isArray(f.comments)?f.comments:[],liked=likes.includes(currentProfile().id),titleText=cleanPostTitle(f.titulo),author=f.author||{},isLegacy=!author.id,canManage=(author.id===currentProfile().id)||isLegacy;const card=document.createElement('div');card.className='imgcard card '+(!titleText?'post-no-title':'');card.dataset.id=id;if(canManage){const trash=document.createElement('button');trash.type='button';trash.className='trash';trash.textContent='🗑️';trash.addEventListener('click',()=>window.borrarFotoPrensaReal(id));card.appendChild(trash)}const img=document.createElement('img');img.loading='lazy';img.decoding='async';img.src=f.src||'';img.alt=titleText||'Publicación sin título';img.className='zoomable';img.addEventListener('click',()=>openPostLightbox(img.src,id,f));const body=document.createElement('div');body.style.cssText='padding:15px;text-align:center;font-weight:bold';if(titleText||canManage){const row=document.createElement('div');row.className='card-title-row';if(titleText){const title=document.createElement('span');title.textContent=titleText;row.appendChild(title)}if(canManage){const edit=document.createElement('button');edit.type='button';edit.className='inline-title-edit';edit.title=titleText?'Editar título':'Añadir título';edit.textContent='✏️';edit.addEventListener('click',ev=>{ev.stopPropagation();window.editarTituloPublicacion(id,titleText)});row.appendChild(edit)}body.appendChild(row)}const authorLine=document.createElement('div');authorLine.className='author-line';authorLine.innerHTML=`<img src="${author.avatar||DEFAULT_AVATAR}" alt="Autor"><span>${author.name||'Entrenador anónimo'} · ${author.club||'Sin club'}</span>`;authorLine.addEventListener('click',()=>openMiniProfile({name:author.name,club:author.club,avatar:author.photo||author.avatar}));body.appendChild(authorLine);if(isLegacy){const legacy=document.createElement('div');legacy.className='legacy-author-warning';legacy.textContent='Publicación sin autor · puedes reclamarla';body.appendChild(legacy)}const actions=document.createElement('div');actions.className='post-actions';const likeBtn=document.createElement('button');likeBtn.type='button';likeBtn.className='react-btn '+(liked?'active':'');likeBtn.textContent='❤️ '+likes.length;likeBtn.addEventListener('click',()=>window.toggleLike(id));const commentBtn=document.createElement('button');commentBtn.type='button';commentBtn.className='react-btn';commentBtn.textContent='💬 '+comments.length;commentBtn.addEventListener('click',()=>openPostLightbox(img.src,id,f));const viewBtn=document.createElement('button');viewBtn.type='button';viewBtn.className='download-btn view-image-btn';viewBtn.textContent='🖼️ Ver imagen';viewBtn.addEventListener('click',ev=>{ev.stopPropagation();window.abrirLightbox(img.src)});const dl=document.createElement('a');dl.className='download-btn';dl.href=f.src||'#';dl.download=safeFileName(titleText||'publicacion-premier-osm')+'.jpg';dl.textContent='⬇️ Descargar';if(isLegacy){const claim=document.createElement('button');claim.type='button';claim.className='claim-btn';claim.textContent='🏷️ Reclamar';claim.addEventListener('click',()=>window.reclamarPublicacion(id));actions.append(likeBtn,commentBtn,viewBtn,claim,dl)}else{actions.append(likeBtn,commentBtn,viewBtn,dl)};body.appendChild(actions);const move=document.createElement('div');move.className='move';Object.keys(cats).filter(k=>k!==cat).forEach(k=>move.appendChild(crearBotonMover(id,k)));body.appendChild(move);card.append(img,body);prepend?g.prepend(card):g.appendChild(card)}
 async function cargarCategoria(cat,force=false){
  if(!cats[cat]||state[cat].loading)return;
  activeCategory=cat;
@@ -457,6 +492,65 @@ window.editarTituloPublicacion=async(id,actual='')=>{
  input.onkeydown=e=>{if(e.key==='Enter')doSave();if(e.key==='Escape')modal.classList.remove('open')};
 };
 
+function commentTimeMs(c){
+ const f=c&&c.fecha;
+ if(!f)return 0;
+ if(typeof f.toMillis==='function')return f.toMillis();
+ if(typeof f.seconds==='number')return f.seconds*1000+Math.floor((f.nanoseconds||0)/1000000);
+ const d=new Date(f);return isNaN(d.getTime())?0:d.getTime();
+}
+function ensureReplyDigestModal(){
+ let modal=document.getElementById('reply-digest-modal');
+ if(modal)return modal;
+ modal=document.createElement('div');
+ modal.id='reply-digest-modal';
+ modal.className='reply-digest-modal';
+ modal.innerHTML=`<div class="reply-digest-box"><button type="button" class="reply-digest-close" id="reply-digest-close">&times;</button><h3>💬 Respuestas nuevas</h3><p>Estas son las respuestas que recibiste desde tu última visita.</p><div class="reply-digest-list" id="reply-digest-list"></div><div class="reply-digest-actions"><button type="button" class="btn" id="reply-digest-ok">Entendido</button></div></div>`;
+ document.body.appendChild(modal);
+ const close=()=>modal.classList.remove('open');
+ modal.querySelector('#reply-digest-close').onclick=close;
+ modal.querySelector('#reply-digest-ok').onclick=close;
+ modal.addEventListener('click',e=>{if(e.target===modal)close()});
+ return modal;
+}
+async function checkReplyDigest(){
+ try{
+  if(!profileReady())return;
+  await initFirebase();
+  const me=currentProfile().id;
+  const last=Number(localStorage.getItem('premier_reply_seen_at')||'0');
+  const snap=await fb.getDocs(noticias);
+  const replies=[];
+  snap.forEach(d=>{
+   const post=d.data()||{},comments=Array.isArray(post.comments)?post.comments:[],byId={};
+   comments.forEach(c=>{if(c&&c.id)byId[c.id]=c});
+   comments.forEach(c=>{
+    const t=commentTimeMs(c);
+    if(!c||!c.parentId||c.profileId===me||t<=last)return;
+    const parent=byId[c.parentId];
+    if(parent&&parent.profileId===me){replies.push({postId:d.id,post,comment:c,parent,time:t});}
+   });
+  });
+  replies.sort((a,b)=>b.time-a.time);
+  localStorage.setItem('premier_reply_seen_at',String(Date.now()));
+  if(!replies.length)return;
+  const modal=ensureReplyDigestModal(),list=modal.querySelector('#reply-digest-list');
+  list.innerHTML='';
+  replies.slice(0,12).forEach(r=>{
+   const item=document.createElement('button');
+   item.type='button';item.className='reply-digest-item';
+   const title=cleanPostTitle(r.post.titulo)||'Publicación sin título';
+   item.innerHTML=`<b>${r.comment.name||'Alguien'} te respondió</b><span>${title}</span><p></p>`;
+   item.querySelector('p').textContent=r.comment.text||'';
+   item.onclick=()=>{modal.classList.remove('open');openPostLightbox(r.post.src,r.postId,r.post)};
+   list.appendChild(item);
+  });
+  modal.classList.add('open');
+ }catch(e){console.warn('Resumen de respuestas no disponible',e)}
+}
+window.checkReplyDigest=checkReplyDigest;
+setTimeout(checkReplyDigest,1200);
+
 window.subirImagenCategoria=async(e,cat)=>{
  const file=e.target.files[0];
  if(!file)return;
@@ -471,9 +565,10 @@ window.subirImagenCategoria=async(e,cat)=>{
    return;
   }
   await initFirebase();
-  const author=currentProfile();
+  const author=getSelectedUploadAuthor(cat);
   const docRef=await fb.addDoc(noticias,{titulo:title,src,categoria:cat,tipo:'imagen-firestore',fecha:fb.serverTimestamp(),author,likes:[],comments:[]});
   cats[cat].t.value='';
+  resetUploadAuthor(cat);
   e.target.value='';
 
   // SOLUCIÓN: mostrar la imagen al instante sin tener que pulsar F5.
