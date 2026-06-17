@@ -1,19 +1,22 @@
-# Premier OSM League 25/26 - Versión sin scripts descargables
+# Premier OSM League 25/26 - Archivos separados actualizados
 
-Descarga SOLO estos dos archivos:
+Usa estos dos archivos:
 
-- `INDEX_UNICO_SIN_SCRIPTS.html`
-- `README_SIN_SCRIPTS.md`
+1. Descarga `index.html`.
+2. Descarga `README.md`.
+3. Sustituye los dos archivos antiguos de tu carpeta.
 
-## Cómo usarlo
+Esta versión del HTML es autocontenida: incluye CSS y JS dentro del propio `index.html`, así no dependes de las carpetas `css` ni `js` para probarlo.
 
-1. Descarga `INDEX_UNICO_SIN_SCRIPTS.html`.
-2. Cambia el nombre a `index.html`.
-3. Sustituye tu `index.html` antiguo por este nuevo.
-4. Descarga `README_SIN_SCRIPTS.md`.
-5. Cambia el nombre a `README.md`.
-6. Sustituye tu `README.md` antiguo.
-7. Puedes dejar las carpetas `css` y `js`, pero esta versión NO las usa.
-8. Abre `index.html` y pulsa `Ctrl + F5`.
+Cambios incluidos:
 
-Esta versión es autocontenida: no necesita descargar `script-01.js`, `script-07.js` ni ningún archivo JS suelto.
+- Navbar Pro.
+- Actividad reciente.
+- Selector de autor completo.
+- Cuentas oficiales de clubes.
+- Carrusel del Consejo Interno.
+- Buscadores y filtros.
+- Fijar publicaciones.
+- Editar autor visible.
+- Botón Ver imagen.
+- Sin notificaciones flotantes.
