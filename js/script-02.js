@@ -30,39 +30,32 @@ function getProfile(){try{return JSON.parse(localStorage.getItem('premier_profil
 function profileReady(){const p=getProfile();return !!(p&&p.name&&p.club)}
 function currentProfile(){const p=getProfile()||{};return {id:getDeviceId(),name:p.name||'Entrenador anónimo',club:p.club||'Sin club',avatar:p.avatar||DEFAULT_AVATAR,photo:p.photo||p.avatar||DEFAULT_AVATAR}}
 const UPLOAD_AUTHORS={
- 'trainer-jose-antonio':{name:'José Antonio López Morales',club:'Liverpool FC',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'trainer-diego':{name:'Diego Mañas Haro',club:'Tottenham Hotspur',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'trainer-pedro':{name:'Pedro Ruz Mañas',club:'Manchester City',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'trainer-dennis':{name:'Dennis Patrik Bucur',club:'Arsenal FC',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'trainer-jose-felix':{name:'Jose Félix Codina Ramos',club:'Manchester United',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'trainer-javier':{name:'Javier Carrión Guillén',club:'Chelsea FC',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'trainer-alvaro':{name:'Álvaro Codina Ramos',club:'Newcastle United',role:'Entrenador',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'org-miguel':{name:'Miguel Ángel',club:'Organismo interno · Presidente oficial',role:'Presidente oficial',avatar:'https://i.ibb.co/1Gyxxf4d/image.png',photo:'https://i.ibb.co/1Gyxxf4d/image.png'},
- 'org-diddy':{name:'P. Diddy',club:'Organismo interno · Vicepresidencia',role:'Vicepresidente',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'org-jeffrey':{name:'Jeffrey Epstein',club:'Organismo interno · Control interno',role:'Control interno',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'org-gaspar':{name:'Gaspar Torrente',club:'Organismo interno · Disciplina',role:'Disciplina',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'org-rafael':{name:'Rafael Cazorla',club:'Organismo interno · Jefe de los Árbitros',role:'Jefe de los Árbitros',avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
- 'premier-league':{name:'Premier League',club:'Comunicado oficial de la liga',role:'Institución',avatar:'https://i.ibb.co/RTLRRmMg/image-removebg-preview.png',photo:'https://i.ibb.co/RTLRRmMg/image-removebg-preview.png'}
+ "trainer-jose-antonio":{name:"José Antonio López Morales",club:"Liverpool FC",role:"Entrenador",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "trainer-diego":{name:"Diego Mañas Haro",club:"Tottenham Hotspur",role:"Entrenador",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "trainer-pedro":{name:"Pedro Ruz Mañas",club:"Manchester City",role:"Entrenador",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "trainer-dennis":{name:"Dennis Patrik Bucur",club:"Arsenal FC",role:"Entrenador",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "trainer-jose-felix":{name:"Jose Félix Codina Ramos",club:"Manchester United",role:"Entrenador",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "trainer-javier":{name:"Javier Carrión Guillén",club:"Chelsea FC",role:"Entrenador",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "trainer-alvaro":{name:"Álvaro Codina Ramos",club:"Newcastle United",role:"Entrenador",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "org-miguel":{name:"Miguel Ángel",club:"Organismo interno · Presidente oficial",role:"Organismo interno",avatar:"https://i.ibb.co/1Gyxxf4d/image.png",photo:"https://i.ibb.co/1Gyxxf4d/image.png"},
+ "org-diddy":{name:"P. Diddy",club:"Organismo interno · Vicepresidencia",role:"Organismo interno",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "org-jeffrey":{name:"Jeffrey Epstein",club:"Organismo interno · Control interno",role:"Organismo interno",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "org-gaspar":{name:"Gaspar Torrente",club:"Organismo interno · Disciplina",role:"Organismo interno",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "org-rafael":{name:"Rafael Cazorla",club:"Organismo interno · Jefe de los Árbitros",role:"Organismo interno",avatar:DEFAULT_AVATAR,photo:DEFAULT_AVATAR},
+ "premier-league":{name:"Premier League",club:"Comunicado oficial de la liga",role:"Institución",avatar:"https://i.ibb.co/RTLRRmMg/image-removebg-preview.png",photo:"https://i.ibb.co/RTLRRmMg/image-removebg-preview.png"},
+ "club-arsenal":{name:"Arsenal FC",club:"Cuenta oficial · Arsenal FC",role:"Cuenta de club",avatar:"https://i.ibb.co/wZ96RsLT/image.png",photo:"https://i.ibb.co/wZ96RsLT/image.png"},
+ "club-chelsea":{name:"Chelsea FC",club:"Cuenta oficial · Chelsea FC",role:"Cuenta de club",avatar:"https://i.ibb.co/rKxZvxgy/image.png",photo:"https://i.ibb.co/rKxZvxgy/image.png"},
+ "club-tottenham":{name:"Tottenham Hotspur",club:"Cuenta oficial · Tottenham Hotspur",role:"Cuenta de club",avatar:"https://i.ibb.co/PZmybN86/image.png",photo:"https://i.ibb.co/PZmybN86/image.png"},
+ "club-united":{name:"Manchester United",club:"Cuenta oficial · Manchester United",role:"Cuenta de club",avatar:"https://i.ibb.co/7xCCqss7/image.png",photo:"https://i.ibb.co/7xCCqss7/image.png"},
+ "club-city":{name:"Manchester City",club:"Cuenta oficial · Manchester City",role:"Cuenta de club",avatar:"https://i.ibb.co/v4PDyF8B/image.png",photo:"https://i.ibb.co/v4PDyF8B/image.png"},
+ "club-liverpool":{name:"Liverpool FC",club:"Cuenta oficial · Liverpool FC",role:"Cuenta de club",avatar:"https://i.ibb.co/zHTWCm5v/image.png",photo:"https://i.ibb.co/zHTWCm5v/image.png"},
+ "club-newcastle":{name:"Newcastle United",club:"Cuenta oficial · Newcastle United",role:"Cuenta de club",avatar:"https://i.ibb.co/bjfCZSBd/image.png",photo:"https://i.ibb.co/bjfCZSBd/image.png"}
 };
 window.toggleCustomAuthor=function(cat){const sel=document.getElementById('autor-'+cat),box=document.getElementById('custom-author-'+cat);if(box)box.style.display=(sel&&sel.value==='custom')?'block':'none'};
-function getSelectedUploadAuthor(cat){
- const sel=document.getElementById('autor-'+cat);
- const owner=currentProfile();
- if(sel&&sel.value==='custom'){
-  const name=(document.getElementById('custom-author-name-'+cat)?.value||'').trim();
-  const club=(document.getElementById('custom-author-club-'+cat)?.value||'').trim();
-  return {id:owner.id,name:name||owner.name||'Autor personalizado',club:club||'Autor personalizado',role:'Autor personalizado',avatar:owner.avatar||DEFAULT_AVATAR,photo:owner.photo||owner.avatar||DEFAULT_AVATAR,selectedAuthorId:'custom',selectedAuthorRole:'Autor personalizado',uploaderId:owner.id,uploaderName:owner.name};
- }
- const selected=sel&&sel.value?UPLOAD_AUTHORS[sel.value]:null;
- if(!selected)return {...owner,selectedAuthorId:'profile-current',selectedAuthorRole:'Perfil actual',uploaderId:owner.id,uploaderName:owner.name};
- return {...selected,id:owner.id,selectedAuthorId:sel.value,selectedAuthorRole:selected.role||'',uploaderId:owner.id,uploaderName:owner.name};
-}
-function resetUploadAuthor(cat){
- const sel=document.getElementById('autor-'+cat);if(sel)sel.value='';
- const box=document.getElementById('custom-author-'+cat);if(box)box.style.display='none';
- const n=document.getElementById('custom-author-name-'+cat);if(n)n.value='';
- const c=document.getElementById('custom-author-club-'+cat);if(c)c.value='';
-}
+function validateSelectedAuthor(cat){const sel=document.getElementById('autor-'+cat);if(sel&&sel.value==='custom'){const name=(document.getElementById('custom-author-name-'+cat)?.value||'').trim();if(!name)return 'Escribe el nombre del autor personalizado.';}return ''}
+function getSelectedUploadAuthor(cat){const sel=document.getElementById('autor-'+cat);const owner=currentProfile();if(sel&&sel.value==='custom'){const name=(document.getElementById('custom-author-name-'+cat)?.value||'').trim();const club=(document.getElementById('custom-author-club-'+cat)?.value||'').trim();return {name:name||owner.name||'Autor personalizado',club:club||'Autor personalizado',role:'Autor personalizado',avatar:owner.avatar||DEFAULT_AVATAR,photo:owner.photo||owner.avatar||DEFAULT_AVATAR,selectedAuthorId:'custom',selectedAuthorRole:'Autor personalizado'}}const selected=sel&&sel.value?UPLOAD_AUTHORS[sel.value]:null;if(!selected)return {name:owner.name,club:owner.club,avatar:owner.avatar,photo:owner.photo,role:'Entrenador',selectedAuthorId:'profile-current',selectedAuthorRole:'Perfil actual'};return {...selected,selectedAuthorId:sel.value,selectedAuthorRole:selected.role||''}}
+function resetUploadAuthor(cat){const sel=document.getElementById('autor-'+cat);if(sel)sel.value='';const box=document.getElementById('custom-author-'+cat);if(box)box.style.display='none';const n=document.getElementById('custom-author-name-'+cat);if(n)n.value='';const c=document.getElementById('custom-author-club-'+cat);if(c)c.value=''}
+function autorLabel(role){if(role==='Cuenta de club')return '🏟️ Cuenta de club';if(role==='Institución')return '🦁 Premier League';if(role==='Organismo interno')return '🏛️ Organismo interno';if(role==='Autor personalizado')return '✍️ Autor personalizado';return '👔 Entrenador'}
 
 function setProfile(p){localStorage.setItem('premier_profile',JSON.stringify({...p,id:getDeviceId()}));paintProfileUI();try{window.checkReplyDigest&&window.checkReplyDigest()}catch(_){}}
 function paintProfileUI(){const p=currentProfile();const img=document.getElementById('profile-pill-img'),name=document.getElementById('profile-pill-name');if(img)img.src=p.avatar;if(name){if(profileReady()){name.innerHTML=`<b>${p.name}</b><small>${p.club}</small>`}else{name.innerHTML='<b>Crear perfil</b><small>Configura tu entrenador</small>'}}}
@@ -242,7 +235,7 @@ function crearBotonMover(id,destino){
  b.addEventListener('click',()=>window.moverPublicacion(id,destino));
  return b;
 }
-function paint(g,f,id,prepend=false){const cat=f.categoria||'memes',likes=Array.isArray(f.likes)?f.likes:[],comments=Array.isArray(f.comments)?f.comments:[],liked=likes.includes(currentProfile().id),titleText=cleanPostTitle(f.titulo),author=f.author||{},isLegacy=!author.id,canManage=(author.id===currentProfile().id)||isLegacy;const card=document.createElement('div');card.className='imgcard card '+(!titleText?'post-no-title':'');card.dataset.id=id;if(canManage){const trash=document.createElement('button');trash.type='button';trash.className='trash';trash.textContent='🗑️';trash.addEventListener('click',()=>window.borrarFotoPrensaReal(id));card.appendChild(trash)}const img=document.createElement('img');img.loading='lazy';img.decoding='async';img.src=f.src||'';img.alt=titleText||'Publicación sin título';img.className='zoomable';img.addEventListener('click',()=>openPostLightbox(img.src,id,f));const body=document.createElement('div');body.style.cssText='padding:15px;text-align:center;font-weight:bold';if(titleText||canManage){const row=document.createElement('div');row.className='card-title-row';if(titleText){const title=document.createElement('span');title.textContent=titleText;row.appendChild(title)}if(canManage){const edit=document.createElement('button');edit.type='button';edit.className='inline-title-edit';edit.title=titleText?'Editar título':'Añadir título';edit.textContent='✏️';edit.addEventListener('click',ev=>{ev.stopPropagation();window.editarTituloPublicacion(id,titleText)});row.appendChild(edit)}body.appendChild(row)}const authorLine=document.createElement('div');authorLine.className='author-line';authorLine.innerHTML=`<img src="${author.avatar||DEFAULT_AVATAR}" alt="Autor"><span>${author.name||'Entrenador anónimo'} · ${author.club||'Sin club'}</span>`;authorLine.addEventListener('click',()=>openMiniProfile({name:author.name,club:author.club,avatar:author.photo||author.avatar}));body.appendChild(authorLine);if(isLegacy){const legacy=document.createElement('div');legacy.className='legacy-author-warning';legacy.textContent='Publicación sin autor · puedes reclamarla';body.appendChild(legacy)}const actions=document.createElement('div');actions.className='post-actions';const likeBtn=document.createElement('button');likeBtn.type='button';likeBtn.className='react-btn '+(liked?'active':'');likeBtn.textContent='❤️ '+likes.length;likeBtn.addEventListener('click',()=>window.toggleLike(id));const commentBtn=document.createElement('button');commentBtn.type='button';commentBtn.className='react-btn';commentBtn.textContent='💬 '+comments.length;commentBtn.addEventListener('click',()=>openPostLightbox(img.src,id,f));const viewBtn=document.createElement('button');viewBtn.type='button';viewBtn.className='download-btn view-image-btn';viewBtn.textContent='🖼️ Ver imagen';viewBtn.addEventListener('click',ev=>{ev.stopPropagation();window.abrirLightbox(img.src)});const dl=document.createElement('a');dl.className='download-btn';dl.href=f.src||'#';dl.download=safeFileName(titleText||'publicacion-premier-osm')+'.jpg';dl.textContent='⬇️ Descargar';if(isLegacy){const claim=document.createElement('button');claim.type='button';claim.className='claim-btn';claim.textContent='🏷️ Reclamar';claim.addEventListener('click',()=>window.reclamarPublicacion(id));actions.append(likeBtn,commentBtn,viewBtn,claim,dl)}else{actions.append(likeBtn,commentBtn,viewBtn,dl)};body.appendChild(actions);const move=document.createElement('div');move.className='move';Object.keys(cats).filter(k=>k!==cat).forEach(k=>move.appendChild(crearBotonMover(id,k)));body.appendChild(move);card.append(img,body);prepend?g.prepend(card):g.appendChild(card)}
+function paint(g,f,id,prepend=false){const cat=f.categoria||'memes',likes=Array.isArray(f.likes)?f.likes:[],comments=Array.isArray(f.comments)?f.comments:[],liked=likes.includes(currentProfile().id),titleText=cleanPostTitle(f.titulo),author=f.author||{},owner=f.owner||{},ownerId=f.ownerId||owner.id||author.id,isLegacy=!ownerId&&!author.id,canManage=(ownerId===currentProfile().id)||isLegacy;const card=document.createElement('div');card.className='imgcard card '+(!titleText?'post-no-title':'');card.dataset.id=id;card.dataset.title=(titleText||'').toLowerCase();card.dataset.author=((author.name||'')+' '+(author.club||'')).toLowerCase();card.dataset.role=author.role||author.selectedAuthorRole||'Entrenador';card.dataset.likes=String(likes.length);card.dataset.comments=String(contarComentariosVisibles(comments));card.dataset.date=String(fechaMs(f)||Date.now());card.dataset.pinned=f.pinned?'1':'0';if(f.pinned){const pin=document.createElement('div');pin.className='pinned-ribbon';pin.textContent='📌 Fijado';card.appendChild(pin)}if(canManage){const trash=document.createElement('button');trash.type='button';trash.className='trash';trash.textContent='🗑️';trash.addEventListener('click',()=>window.borrarFotoPrensaReal(id));card.appendChild(trash);const admin=document.createElement('div');admin.className='post-admin-actions';const pinBtn=document.createElement('button');pinBtn.type='button';pinBtn.textContent=f.pinned?'📌 Desfijar':'📌 Fijar';pinBtn.addEventListener('click',ev=>{ev.stopPropagation();window.togglePinnedPublicacion(id,!!f.pinned)});const authorBtn=document.createElement('button');authorBtn.type='button';authorBtn.textContent='👤 Autor';authorBtn.addEventListener('click',ev=>{ev.stopPropagation();window.editarAutorPublicacion(id,author)});admin.append(pinBtn,authorBtn);card.appendChild(admin)}const img=document.createElement('img');img.loading='lazy';img.decoding='async';img.src=f.src||'';img.alt=titleText||'Publicación sin título';img.className='zoomable';img.addEventListener('click',()=>openPostLightbox(img.src,id,f));const body=document.createElement('div');body.style.cssText='padding:15px;text-align:center;font-weight:bold';if(titleText||canManage){const row=document.createElement('div');row.className='card-title-row';if(titleText){const title=document.createElement('span');title.textContent=titleText;row.appendChild(title)}if(canManage){const edit=document.createElement('button');edit.type='button';edit.className='inline-title-edit';edit.title=titleText?'Editar título':'Añadir título';edit.textContent='✏️';edit.addEventListener('click',ev=>{ev.stopPropagation();window.editarTituloPublicacion(id,titleText)});row.appendChild(edit)}body.appendChild(row)}const authorLine=document.createElement('div');authorLine.className='author-line';authorLine.innerHTML=`<img src="${author.avatar||DEFAULT_AVATAR}" alt="Autor"><span>${author.name||'Entrenador anónimo'} · ${author.club||'Sin club'}</span>`;authorLine.addEventListener('click',()=>openMiniProfile({name:author.name,club:author.club,avatar:author.photo||author.avatar}));body.appendChild(authorLine);const typeBadge=document.createElement('div');typeBadge.className='author-type-badge';typeBadge.textContent=autorLabel(author.role||author.selectedAuthorRole||'Entrenador');body.appendChild(typeBadge);if(isLegacy){const legacy=document.createElement('div');legacy.className='legacy-author-warning';legacy.textContent='Publicación sin autor · puedes reclamarla';body.appendChild(legacy)}const actions=document.createElement('div');actions.className='post-actions';const likeBtn=document.createElement('button');likeBtn.type='button';likeBtn.className='react-btn '+(liked?'active':'');likeBtn.textContent='❤️ '+likes.length;likeBtn.addEventListener('click',()=>window.toggleLike(id));const commentBtn=document.createElement('button');commentBtn.type='button';commentBtn.className='react-btn';commentBtn.textContent='💬 '+comments.length;commentBtn.addEventListener('click',()=>openPostLightbox(img.src,id,f));const viewBtn=document.createElement('button');viewBtn.type='button';viewBtn.className='download-btn view-image-btn';viewBtn.textContent='🖼️ Ver imagen';viewBtn.addEventListener('click',ev=>{ev.stopPropagation();window.abrirLightbox(img.src)});const dl=document.createElement('a');dl.className='download-btn';dl.href=f.src||'#';dl.download=safeFileName(titleText||'publicacion-premier-osm')+'.jpg';dl.textContent='⬇️ Descargar';if(isLegacy){const claim=document.createElement('button');claim.type='button';claim.className='claim-btn';claim.textContent='🏷️ Reclamar';claim.addEventListener('click',()=>window.reclamarPublicacion(id));actions.append(likeBtn,commentBtn,viewBtn,claim,dl)}else{actions.append(likeBtn,commentBtn,viewBtn,dl)};body.appendChild(actions);const move=document.createElement('div');move.className='move';Object.keys(cats).filter(k=>k!==cat).forEach(k=>move.appendChild(crearBotonMover(id,k)));body.appendChild(move);card.append(img,body);prepend?g.prepend(card):g.appendChild(card);applyGalleryFilters(cat)}
 async function cargarCategoria(cat,force=false){
  if(!cats[cat]||state[cat].loading)return;
  activeCategory=cat;
@@ -256,7 +249,7 @@ async function cargarCategoria(cat,force=false){
  const snap=await fb.getDocs(fb.query(noticias,fb.where('categoria','==',cat)));
  const docs=[];
  snap.forEach(d=>docs.push({id:d.id,data:{...d.data(),categoria:cat}}));
- docs.sort((a,b)=>fechaMs(b.data)-fechaMs(a.data));
+ docs.sort((a,b)=>(b.data.pinned===true)-(a.data.pinned===true)||fechaMs(b.data)-fechaMs(a.data));
  if(!docs.length){
  g.innerHTML=empty(cat==='memes'?'No hay memes todavía.':cat==='clubes'?'No hay comunicados de clubes todavía.':'No hay comunicados Premier todavía.');
  setE(cat,'','');
@@ -492,70 +485,12 @@ window.editarTituloPublicacion=async(id,actual='')=>{
  input.onkeydown=e=>{if(e.key==='Enter')doSave();if(e.key==='Escape')modal.classList.remove('open')};
 };
 
-function commentTimeMs(c){
- const f=c&&c.fecha;
- if(!f)return 0;
- if(typeof f.toMillis==='function')return f.toMillis();
- if(typeof f.seconds==='number')return f.seconds*1000+Math.floor((f.nanoseconds||0)/1000000);
- const d=new Date(f);return isNaN(d.getTime())?0:d.getTime();
-}
-function ensureReplyDigestModal(){
- let modal=document.getElementById('reply-digest-modal');
- if(modal)return modal;
- modal=document.createElement('div');
- modal.id='reply-digest-modal';
- modal.className='reply-digest-modal';
- modal.innerHTML=`<div class="reply-digest-box"><button type="button" class="reply-digest-close" id="reply-digest-close">&times;</button><h3>💬 Respuestas nuevas</h3><p>Estas son las respuestas que recibiste desde tu última visita.</p><div class="reply-digest-list" id="reply-digest-list"></div><div class="reply-digest-actions"><button type="button" class="btn" id="reply-digest-ok">Entendido</button></div></div>`;
- document.body.appendChild(modal);
- const close=()=>modal.classList.remove('open');
- modal.querySelector('#reply-digest-close').onclick=close;
- modal.querySelector('#reply-digest-ok').onclick=close;
- modal.addEventListener('click',e=>{if(e.target===modal)close()});
- return modal;
-}
-async function checkReplyDigest(){
- try{
-  if(!profileReady())return;
-  await initFirebase();
-  const me=currentProfile().id;
-  const last=Number(localStorage.getItem('premier_reply_seen_at')||'0');
-  const snap=await fb.getDocs(noticias);
-  const replies=[];
-  snap.forEach(d=>{
-   const post=d.data()||{},comments=Array.isArray(post.comments)?post.comments:[],byId={};
-   comments.forEach(c=>{if(c&&c.id)byId[c.id]=c});
-   comments.forEach(c=>{
-    const t=commentTimeMs(c);
-    if(!c||!c.parentId||c.profileId===me||t<=last)return;
-    const parent=byId[c.parentId];
-    if(parent&&parent.profileId===me){replies.push({postId:d.id,post,comment:c,parent,time:t});}
-   });
-  });
-  replies.sort((a,b)=>b.time-a.time);
-  localStorage.setItem('premier_reply_seen_at',String(Date.now()));
-  if(!replies.length)return;
-  const modal=ensureReplyDigestModal(),list=modal.querySelector('#reply-digest-list');
-  list.innerHTML='';
-  replies.slice(0,12).forEach(r=>{
-   const item=document.createElement('button');
-   item.type='button';item.className='reply-digest-item';
-   const title=cleanPostTitle(r.post.titulo)||'Publicación sin título';
-   item.innerHTML=`<b>${r.comment.name||'Alguien'} te respondió</b><span>${title}</span><p></p>`;
-   item.querySelector('p').textContent=r.comment.text||'';
-   item.onclick=()=>{modal.classList.remove('open');openPostLightbox(r.post.src,r.postId,r.post)};
-   list.appendChild(item);
-  });
-  modal.classList.add('open');
- }catch(e){console.warn('Resumen de respuestas no disponible',e)}
-}
-window.checkReplyDigest=checkReplyDigest;
-setTimeout(checkReplyDigest,1200);
-
 window.subirImagenCategoria=async(e,cat)=>{
  const file=e.target.files[0];
  if(!file)return;
  if(!requireProfile()){e.target.value='';return;}
  const title=cats[cat].t.value.trim();
+ const authorErr=validateSelectedAuthor(cat);if(authorErr){setE(cat,'❌ '+authorErr,'err');e.target.value='';return;}
  setE(cat,'Comprimiendo imagen...');
  try{
   const src=await comprimir(file);
@@ -565,8 +500,9 @@ window.subirImagenCategoria=async(e,cat)=>{
    return;
   }
   await initFirebase();
+  const owner=currentProfile();
   const author=getSelectedUploadAuthor(cat);
-  const docRef=await fb.addDoc(noticias,{titulo:title,src,categoria:cat,tipo:'imagen-firestore',fecha:fb.serverTimestamp(),author,likes:[],comments:[]});
+  const docRef=await fb.addDoc(noticias,{titulo:title,src,categoria:cat,tipo:'imagen-firestore',fecha:fb.serverTimestamp(),author,owner,ownerId:owner.id,pinned:false,likes:[],comments:[]});
   cats[cat].t.value='';
   resetUploadAuthor(cat);
   e.target.value='';
@@ -578,7 +514,7 @@ window.subirImagenCategoria=async(e,cat)=>{
   if(g){
    const emptyBox=g.querySelector('.empty');
    if(emptyBox)emptyBox.remove();
-   paint(g,{titulo:title,src,categoria:cat,tipo:'imagen-firestore',fecha:Date.now(),author,likes:[],comments:[]},docRef.id,true);
+   paint(g,{titulo:title,src,categoria:cat,tipo:'imagen-firestore',fecha:Date.now(),author,owner,ownerId:owner.id,pinned:false,likes:[],comments:[]},docRef.id,true);
   }
 
   state[cat].loaded=false;
