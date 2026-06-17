@@ -1,14 +1,3 @@
-# Premier OSM League 25/26 - Social Pro
+# Premier OSM League 25/26 - Social Pro Fix
 
-Incluye:
-- Actividad reciente mejorada.
-- Editar autor visible después de publicar.
-- Insignias por tipo de autor.
-- Publicaciones fijadas.
-- Buscador/filtros/ordenación sticky en galerías.
-- Control de autor personalizado obligatorio.
-- Cuentas oficiales de clubes como autores.
-- Sin panel/botón de notificaciones.
-- Separación author / owner / ownerId.
-
-Sube todo respetando `css/` y `js/`.
+Incluye corrección de carga de publicaciones, álbum deslizable del Consejo Interno, buscador sticky, editar autor, fijados, actividad reciente y cuentas oficiales de clubes.
